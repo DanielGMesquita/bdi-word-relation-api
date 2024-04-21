@@ -20,6 +20,7 @@ public class DictionaryScraperService {
       DictionaryScraperRequest request)
       throws ErrorGettingPageDataException, NoContentException, NoSynonimsException {
     log.info("Scraping dictionary for word: {}", request.getWord());
+    log.info("Occurrences found for word: {}", request.getWord());
     return this.dictionaryManager.getSynonyms(request);
   }
 }
