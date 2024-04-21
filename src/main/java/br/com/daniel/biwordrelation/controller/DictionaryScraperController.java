@@ -1,6 +1,6 @@
 package br.com.daniel.biwordrelation.controller;
 
-import br.com.daniel.biwordrelation.dto.DictionaryScraperResponseDTO;
+import br.com.daniel.biwordrelation.dto.DictionaryScraperSynonymResponseDTO;
 import br.com.daniel.biwordrelation.entities.DictionaryScraperRequest;
 import br.com.daniel.biwordrelation.service.DictionaryScraperService;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ public class DictionaryScraperController {
   private DictionaryScraperService dictionaryScraperService;
 
   @GetMapping("/synonyms")
-  public DictionaryScraperResponseDTO findSynonyms(DictionaryScraperRequest request) {
+  public DictionaryScraperSynonymResponseDTO findSynonyms(DictionaryScraperRequest request) {
     return this.dictionaryScraperService.scrapeDictionaryForSynonyms(request);
   }
 }

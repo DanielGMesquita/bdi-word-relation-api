@@ -4,6 +4,6 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class DictionaryScraperResponseDTO {
+public class DictionaryScraperSynonymResponseDTO {
   private List<String> synonyms;
 }

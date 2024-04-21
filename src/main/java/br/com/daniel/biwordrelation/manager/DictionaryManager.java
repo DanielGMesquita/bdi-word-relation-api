@@ -1,6 +1,6 @@
 package br.com.daniel.biwordrelation.manager;
 
-import br.com.daniel.biwordrelation.dto.DictionaryScraperResponseDTO;
+import br.com.daniel.biwordrelation.dto.DictionaryScraperSynonymResponseDTO;
 import br.com.daniel.biwordrelation.entities.DictionaryScraperRequest;
 import br.com.daniel.biwordrelation.exceptions.NoContentException;
 import br.com.daniel.biwordrelation.exceptions.NoSynonimsException;
@@ -22,12 +22,12 @@ public class DictionaryManager {
   @Value("${url.dictionary_web_page}")
   public String baseUrl;
 
-  public DictionaryScraperResponseDTO getSynonyms(
+  public DictionaryScraperSynonymResponseDTO getSynonyms(
       DictionaryScraperRequest dictionaryScraperRequest) {
 
     String url = this.baseUrl + dictionaryScraperRequest.getWord();
 
-    DictionaryScraperResponseDTO dictionaryScraperResponseDTO = new DictionaryScraperResponseDTO();
+    DictionaryScraperSynonymResponseDTO dictionaryScraperSynonymResponseDTO = new DictionaryScraperSynonymResponseDTO();
 
     List<String> synonyms = new ArrayList<>();
 
@@ -70,8 +70,8 @@ public class DictionaryManager {
       throw new RuntimeException(e);
     }
 
-    dictionaryScraperResponseDTO.setSynonyms(synonyms);
+    dictionaryScraperSynonymResponseDTO.setSynonyms(synonyms);
 
-    return dictionaryScraperResponseDTO;
+    return dictionaryScraperSynonymResponseDTO;
   }
 }
