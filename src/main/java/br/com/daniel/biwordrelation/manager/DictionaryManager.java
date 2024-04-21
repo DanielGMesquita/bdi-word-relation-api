@@ -41,7 +41,7 @@ public class DictionaryManager {
       }
 
       List<Node> words = paragraph.childNodes();
-      synonymsList.addAll(HtmlElementProcessor.getSynonymsList(words, dictionaryScraperRequest));
+      HtmlElementProcessor.populateSynonymsList(words, dictionaryScraperRequest, synonymsList);
     }
 
     DictionaryScraperSynonymResponseDTO responseDTO = new DictionaryScraperSynonymResponseDTO();
