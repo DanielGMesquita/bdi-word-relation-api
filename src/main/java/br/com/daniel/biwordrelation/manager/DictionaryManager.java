@@ -1,10 +1,12 @@
 package br.com.daniel.biwordrelation.manager;
 
 import br.com.daniel.biwordrelation.dto.DictionaryScraperSynonymResponseDTO;
+import br.com.daniel.biwordrelation.entities.ChildrenNodeEntity;
 import br.com.daniel.biwordrelation.entities.DictionaryScraperRequest;
+import br.com.daniel.biwordrelation.entities.NodeEntity;
+import br.com.daniel.biwordrelation.entities.RootNodeEntity;
 import br.com.daniel.biwordrelation.exceptions.ErrorGettingPageDataException;
 import br.com.daniel.biwordrelation.exceptions.NoContentException;
-import br.com.daniel.biwordrelation.exceptions.NoSynonimsException;
 import br.com.daniel.biwordrelation.utils.DictionaryPageScraper;
 import br.com.daniel.biwordrelation.utils.HtmlElementProcessor;
 import java.util.ArrayList;
@@ -19,13 +21,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DictionaryManager {
   private final DictionaryPageScraper pageScraper;
+  private static final List<String> allWords = new ArrayList<>();
 
   public DictionaryScraperSynonymResponseDTO getSynonyms(
       DictionaryScraperRequest dictionaryScraperRequest)
-      throws ErrorGettingPageDataException, NoContentException, NoSynonimsException {
+      throws ErrorGettingPageDataException, NoContentException {
     Element contentList = this.pageScraper.getPageData(dictionaryScraperRequest);
-
-    List<String> synonymsList = new ArrayList<>();
+    String baseWord = dictionaryScraperRequest.getWord();
 
     if (contentList == null) {
       throw new NoContentException("No content found for the word provided.");
@@ -33,19 +35,57 @@ public class DictionaryManager {
 
     Elements items = contentList.getElementsByTag("li");
 
+    List<RootNodeEntity> rootChildren = new ArrayList<>();
+
     for (Element item : items) {
+      List<String> rootChildrenList = new ArrayList<>();
       Element paragraph = item.getElementsByTag("p").first();
 
-      if (paragraph == null) {
-        throw new NoSynonimsException("No synonyms found for the word provided.");
+      List<Node> words = new ArrayList<>();
+      if (paragraph != null) {
+        words.addAll(paragraph.childNodes());
       }
 
-      List<Node> words = paragraph.childNodes();
-      HtmlElementProcessor.populateSynonymsList(words, dictionaryScraperRequest, synonymsList);
+      HtmlElementProcessor.populateSynonymsList(
+          words, baseWord, dictionaryScraperRequest, rootChildrenList);
+
+      for (String synonym : rootChildrenList) {
+        DictionaryScraperRequest synonymRequest = new DictionaryScraperRequest();
+        synonymRequest.setWord(synonym);
+        Element synonymElementList = this.pageScraper.getPageData(synonymRequest);
+
+        Elements childItems = synonymElementList.getElementsByTag("li");
+
+        List<ChildrenNodeEntity> clusterChildren = new ArrayList<>();
+
+        for (Element rootItem : childItems) {
+          List<String> clusterChildrenList = new ArrayList<>();
+          Element rootParagraph = rootItem.getElementsByTag("p").first();
+
+          List<Node> rootWords = new ArrayList<>();
+          if (rootParagraph != null) {
+            rootWords.addAll(rootParagraph.childNodes());
+          }
+
+          HtmlElementProcessor.populateSynonymsList(
+              rootWords, baseWord, synonymRequest, clusterChildrenList);
+
+          for (String clusterWord : clusterChildrenList) {
+            ChildrenNodeEntity clusterNode = new ChildrenNodeEntity(clusterWord, 0);
+            clusterChildren.add(clusterNode);
+          }
+        }
+
+        RootNodeEntity rootChild = new RootNodeEntity(synonym, clusterChildren);
+        if (!rootChildren.contains(rootChild)) {
+          rootChildren.add(rootChild);
+        }
+      }
     }
 
+    NodeEntity root = new NodeEntity(dictionaryScraperRequest.getWord(), rootChildren);
     DictionaryScraperSynonymResponseDTO responseDTO = new DictionaryScraperSynonymResponseDTO();
-    responseDTO.setSynonyms(synonymsList);
+    responseDTO.setSynonymsTree(root);
 
     return responseDTO;
   }

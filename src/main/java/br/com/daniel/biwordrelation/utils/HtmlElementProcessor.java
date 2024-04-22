@@ -11,6 +11,7 @@ import org.jsoup.nodes.TextNode;
 public class HtmlElementProcessor {
   public static void populateSynonymsList(
       List<Node> words,
+      String baseWord,
       DictionaryScraperRequest dictionaryScraperRequest,
       List<String> synonymsList) {
     for (Node node : words) {
@@ -20,7 +21,8 @@ public class HtmlElementProcessor {
         for (String word : wordArray) {
           if (!Objects.equals(word, dictionaryScraperRequest.getWord())
               && !word.isBlank()
-              && !synonymsList.contains(word)) {
+              && !synonymsList.contains(word)
+              && !word.equals(baseWord)) {
             synonymsList.add(word);
           }
         }

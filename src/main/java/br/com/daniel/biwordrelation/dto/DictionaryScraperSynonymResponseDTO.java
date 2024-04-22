@@ -1,9 +1,9 @@
 package br.com.daniel.biwordrelation.dto;
 
-import java.util.List;
+import br.com.daniel.biwordrelation.entities.NodeEntity;
 import lombok.Data;
 
 @Data
 public class DictionaryScraperSynonymResponseDTO {
-  private List<String> synonyms;
+  private NodeEntity synonymsTree;
 }
