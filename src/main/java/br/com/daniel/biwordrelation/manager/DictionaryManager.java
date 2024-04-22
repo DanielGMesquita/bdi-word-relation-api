@@ -49,6 +49,8 @@ public class DictionaryManager {
       HtmlElementProcessor.populateSynonymsList(
           words, baseWord, dictionaryScraperRequest, rootChildrenList);
 
+      allWords.addAll(rootChildrenList);
+
       for (String synonym : rootChildrenList) {
         DictionaryScraperRequest synonymRequest = new DictionaryScraperRequest();
         synonymRequest.setWord(synonym);
@@ -69,10 +71,13 @@ public class DictionaryManager {
 
           HtmlElementProcessor.populateSynonymsList(
               rootWords, baseWord, synonymRequest, clusterChildrenList);
+          allWords.addAll(clusterChildrenList);
 
           for (String clusterWord : clusterChildrenList) {
             ChildrenNodeEntity clusterNode = new ChildrenNodeEntity(clusterWord, 0);
-            clusterChildren.add(clusterNode);
+            if (!clusterChildren.contains(clusterNode)) {
+              clusterChildren.add(clusterNode);
+            }
           }
         }
 
@@ -80,6 +85,13 @@ public class DictionaryManager {
         if (!rootChildren.contains(rootChild)) {
           rootChildren.add(rootChild);
         }
+      }
+    }
+
+    for (RootNodeEntity clusterNode : rootChildren) {
+      for (ChildrenNodeEntity clusterChild : clusterNode.getChildren()) {
+        String nodeName = clusterChild.getName();
+        clusterChild.setValue((int) allWords.stream().filter(str -> str.equals(nodeName)).count());
       }
     }
 
