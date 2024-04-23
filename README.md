@@ -30,7 +30,7 @@ No momento só é possível buscar os sinônimos e palavras relacionadas a palav
 - Maven
 
 ### Implantação em produção
-- Deploy: Railway
+- Deploy: Railway - https://dictionary-api.up.railway.app/
 
 ## Como executar o projeto
 
