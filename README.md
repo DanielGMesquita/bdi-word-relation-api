@@ -1,7 +1,7 @@
 
 # Dictionary Scraper
 
-O Dictionary Scraper é uma ferramenta que coleta palavras e seus significados de um site de dicionário e armazena em um banco de dados SQL. A aplicação consiste em um serviço REST que permite a busca de palavras e seus significados e palavras relacionadas.
+O Dictionary Scraper é uma ferramenta que coleta palavras e seus significados de um site de dicionário. A aplicação consiste em um serviço REST que permite a busca de palavras e seus significados e palavras relacionadas.
 
 A aplicação consiste em endpoints que fornecem significados, sinônimos, antônimos e palavras relacionadas, assim como frases que podem utilizar a palvra. Tudo isso buscado a partir de protocolo HTTP.
 
